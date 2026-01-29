@@ -1,0 +1,379 @@
+/* ============================================
+   Iceland Geoportal - Map Controls Styles
+   ============================================ */
+
+/* Map Controls */
+.map-controls {
+    position: absolute;
+    top: var(--spacing-lg);
+    right: var(--spacing-lg);
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+    z-index: 400;
+}
+
+.map-control-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background: var(--bg-secondary);
+    border: none;
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-md);
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.map-control-btn svg {
+    width: 20px;
+    height: 20px;
+}
+
+.map-control-btn:hover {
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
+}
+
+.map-control-btn:active {
+    transform: scale(0.95);
+}
+
+/* Layer Switcher */
+.layer-switcher {
+    position: absolute;
+    bottom: var(--spacing-lg);
+    right: var(--spacing-lg);
+    z-index: 400;
+}
+
+.layer-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background: var(--bg-secondary);
+    border: none;
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-md);
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.layer-btn svg {
+    width: 20px;
+    height: 20px;
+}
+
+.layer-btn:hover {
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
+}
+
+.layer-options {
+    position: absolute;
+    bottom: 100%;
+    right: 0;
+    margin-bottom: var(--spacing-sm);
+    background: var(--bg-secondary);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-lg);
+    padding: var(--spacing-sm);
+    min-width: 160px;
+}
+
+.layer-option {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-sm) var(--spacing-md);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: background var(--transition-fast);
+}
+
+.layer-option:hover {
+    background: var(--bg-tertiary);
+}
+
+.layer-option input {
+    accent-color: var(--primary);
+}
+
+.layer-option span {
+    font-size: 0.875rem;
+    color: var(--text-primary);
+}
+
+/* Scale Control Customization */
+.leaflet-control-scale-line {
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: var(--radius-sm);
+    padding: 2px 8px;
+    border: none !important;
+    box-shadow: var(--shadow-sm);
+}
+
+/* Attribution Customization */
+.leaflet-control-attribution {
+    background: rgba(255, 255, 255, 0.8) !important;
+    padding: 4px 8px;
+    font-size: 10px;
+    border-radius: var(--radius-sm) 0 0 0;
+}
+
+/* Zoom Control Override - Hidden (using custom controls) */
+.leaflet-control-zoom {
+    display: none;
+}
+
+/* Route Line Styles */
+.route-line {
+    stroke: var(--primary);
+    stroke-width: 4;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.route-line-outline {
+    stroke: white;
+    stroke-width: 6;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+/* Info Box (bottom left) */
+.info-box {
+    position: absolute;
+    bottom: var(--spacing-lg);
+    left: var(--spacing-lg);
+    background: var(--bg-secondary);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-md);
+    padding: var(--spacing-md);
+    max-width: 300px;
+    z-index: 400;
+}
+
+.info-box-title {
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: var(--spacing-xs);
+}
+
+.info-box-content {
+    font-size: 0.875rem;
+    color: var(--text-primary);
+}
+
+/* Coordinate Display */
+.coordinate-display {
+    position: absolute;
+    bottom: var(--spacing-lg);
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: var(--radius-full);
+    padding: var(--spacing-xs) var(--spacing-md);
+    font-size: 0.75rem;
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    color: var(--text-secondary);
+    box-shadow: var(--shadow-sm);
+    z-index: 400;
+}
+
+/* Context Menu */
+.context-menu {
+    position: absolute;
+    background: var(--bg-secondary);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-lg);
+    padding: var(--spacing-xs);
+    min-width: 180px;
+    z-index: 1000;
+}
+
+.context-menu-item {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    padding: var(--spacing-sm) var(--spacing-md);
+    border-radius: var(--radius-sm);
+    font-size: 0.875rem;
+    color: var(--text-primary);
+    cursor: pointer;
+    transition: background var(--transition-fast);
+}
+
+.context-menu-item:hover {
+    background: var(--bg-tertiary);
+}
+
+.context-menu-item svg {
+    width: 16px;
+    height: 16px;
+    color: var(--text-secondary);
+}
+
+.context-menu-divider {
+    height: 1px;
+    background: var(--border-color);
+    margin: var(--spacing-xs) 0;
+}
+
+/* Tooltip */
+.map-tooltip {
+    position: absolute;
+    background: var(--text-primary);
+    color: white;
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: var(--radius-sm);
+    font-size: 0.75rem;
+    white-space: nowrap;
+    pointer-events: none;
+    z-index: 1000;
+    transform: translateX(-50%);
+}
+
+.map-tooltip::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 5px solid transparent;
+    border-top-color: var(--text-primary);
+}
+
+/* Distance Markers on Route */
+.distance-marker {
+    background: white;
+    border: 2px solid var(--primary);
+    border-radius: var(--radius-full);
+    padding: 2px 8px;
+    font-size: 0.6875rem;
+    font-weight: 600;
+    color: var(--primary);
+    white-space: nowrap;
+    box-shadow: var(--shadow-sm);
+}
+
+/* Pulse Animation for Selected Markers */
+@keyframes pulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(0, 102, 204, 0.4);
+    }
+    70% {
+        box-shadow: 0 0 0 15px rgba(0, 102, 204, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(0, 102, 204, 0);
+    }
+}
+
+.marker-pulse {
+    animation: pulse 2s infinite;
+}
+
+/* Mini Map Control */
+.mini-map {
+    position: absolute;
+    bottom: 70px;
+    right: var(--spacing-lg);
+    width: 150px;
+    height: 100px;
+    background: var(--bg-secondary);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-md);
+    overflow: hidden;
+    z-index: 400;
+    opacity: 0.9;
+    transition: opacity var(--transition-fast);
+}
+
+.mini-map:hover {
+    opacity: 1;
+}
+
+/* Draggable Waypoint Indicator */
+.waypoint-drag-indicator {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background: var(--primary);
+    border: 2px solid white;
+    border-radius: 50%;
+    cursor: grab;
+    z-index: 500;
+    box-shadow: var(--shadow-md);
+}
+
+.waypoint-drag-indicator:active {
+    cursor: grabbing;
+}
+
+/* Route Preview Overlay */
+.route-preview {
+    position: absolute;
+    top: var(--spacing-lg);
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--bg-secondary);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+    padding: var(--spacing-md) var(--spacing-lg);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-lg);
+    z-index: 400;
+}
+
+.route-preview-stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.route-preview-stat span {
+    font-size: 0.6875rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+}
+
+.route-preview-stat strong {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.route-preview-close {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    width: 24px;
+    height: 24px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 14px;
+    color: var(--text-secondary);
+    transition: all var(--transition-fast);
+}
+
+.route-preview-close:hover {
+    background: var(--danger);
+    border-color: var(--danger);
+    color: white;
+}

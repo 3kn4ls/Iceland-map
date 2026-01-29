@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iceland Tourism Geoportal</title>
+
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/sidebar.css">
+    <link rel="stylesheet" href="styles/controls.css">
+    <link rel="stylesheet" href="styles/modals.css">
+</head>
+<body>
+    <div id="app">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-brand">
+                <svg class="logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                    <circle cx="12" cy="10" r="3"></circle>
+                </svg>
+                <h1>Iceland Geoportal</h1>
+            </div>
+            <nav class="header-nav">
+                <button id="btn-explore" class="nav-btn active" data-view="explore">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon>
+                    </svg>
+                    Explorar
+                </button>
+                <button id="btn-routes" class="nav-btn" data-view="routes">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="6" cy="19" r="3"></circle>
+                        <path d="M9 19h8.5a3.5 3.5 0 0 0 0-7h-11a3.5 3.5 0 0 1 0-7H21"></path>
+                        <circle cx="21" cy="5" r="3"></circle>
+                    </svg>
+                    Mis Rutas
+                </button>
+            </nav>
+            <div class="header-actions">
+                <button id="btn-export" class="action-btn" title="Exportar">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="7 10 12 15 17 10"></polyline>
+                        <line x1="12" y1="15" x2="12" y2="3"></line>
+                    </svg>
+                </button>
+                <button id="btn-settings" class="action-btn" title="Configuración">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="3"></circle>
+                        <path d="M12 1v2m0 18v2M4.22 4.22l1.42 1.42m12.72 12.72l1.42 1.42M1 12h2m18 0h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"></path>
+                    </svg>
+                </button>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Sidebar -->
+            <aside id="sidebar" class="sidebar">
+                <!-- Explore View -->
+                <div id="view-explore" class="sidebar-view active">
+                    <div class="sidebar-header">
+                        <h2>Lugares Turísticos</h2>
+                        <span id="poi-count" class="badge">0</span>
+                    </div>
+
+                    <!-- Search -->
+                    <div class="search-box">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                        </svg>
+                        <input type="text" id="search-input" placeholder="Buscar lugares...">
+                    </div>
+
+                    <!-- Category Filters -->
+                    <div class="filter-section">
+                        <h3>Categorías</h3>
+                        <div id="category-filters" class="filter-chips">
+                            <!-- Generated dynamically -->
+                        </div>
+                    </div>
+
+                    <!-- POI List -->
+                    <div class="poi-list-container">
+                        <ul id="poi-list" class="poi-list">
+                            <!-- Generated dynamically -->
+                        </ul>
+                    </div>
+
+                    <!-- Route Builder -->
+                    <div id="route-builder" class="route-builder">
+                        <div class="route-builder-header">
+                            <h3>Planificador de Ruta</h3>
+                            <button id="btn-clear-route" class="btn-icon" title="Limpiar ruta">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                                </svg>
+                            </button>
+                        </div>
+
+                        <div id="route-waypoints" class="route-waypoints">
+                            <p class="empty-state">Selecciona puntos en el mapa para crear una ruta</p>
+                        </div>
+
+                        <div id="route-stats" class="route-stats hidden">
+                            <div class="stat">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M18 6L6 18M6 6l12 12"></path>
+                                </svg>
+                                <span id="route-distance">0 km</span>
+                            </div>
+                            <div class="stat">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <polyline points="12 6 12 12 16 14"></polyline>
+                                </svg>
+                                <span id="route-duration">0 min</span>
+                            </div>
+                        </div>
+
+                        <div class="route-transport">
+                            <button class="transport-btn active" data-mode="driving" title="En coche">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M5 17a2 2 0 1 0 4 0 2 2 0 1 0-4 0m10 0a2 2 0 1 0 4 0 2 2 0 1 0-4 0"></path>
+                                    <path d="M3 17h2m12 0h2m-2-5V7a2 2 0 0 0-2-2H9a2 2 0 0 0-2 2v5h10z"></path>
+                                </svg>
+                            </button>
+                            <button class="transport-btn" data-mode="cycling" title="En bicicleta">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="5" cy="17" r="3"></circle>
+                                    <circle cx="19" cy="17" r="3"></circle>
+                                    <path d="M12 17l-3-6 6-3 3 6"></path>
+                                    <path d="M9 11l3-6h4"></path>
+                                </svg>
+                            </button>
+                            <button class="transport-btn" data-mode="walking" title="A pie">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="12" cy="4" r="2"></circle>
+                                    <path d="M15 22v-4l-3-3 1-4 3 3h3"></path>
+                                    <path d="M9 22l2-4-2-2"></path>
+                                </svg>
+                            </button>
+                        </div>
+
+                        <div class="route-actions">
+                            <button id="btn-save-route" class="btn btn-primary" disabled>
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+                                    <polyline points="17 21 17 13 7 13 7 21"></polyline>
+                                    <polyline points="7 3 7 8 15 8"></polyline>
+                                </svg>
+                                Guardar Ruta
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Routes View -->
+                <div id="view-routes" class="sidebar-view">
+                    <div class="sidebar-header">
+                        <h2>Mis Rutas</h2>
+                        <span id="routes-count" class="badge">0</span>
+                    </div>
+
+                    <div id="saved-routes-list" class="saved-routes-list">
+                        <div class="empty-state">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                <polyline points="14 2 14 8 20 8"></polyline>
+                            </svg>
+                            <p>No tienes rutas guardadas</p>
+                            <span>Crea tu primera ruta seleccionando puntos en el mapa</span>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Map Container -->
+            <div id="map-container" class="map-container">
+                <div id="map"></div>
+
+                <!-- Map Controls -->
+                <div class="map-controls">
+                    <button id="btn-zoom-in" class="map-control-btn" title="Acercar">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="12" y1="5" x2="12" y2="19"></line>
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                        </svg>
+                    </button>
+                    <button id="btn-zoom-out" class="map-control-btn" title="Alejar">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                        </svg>
+                    </button>
+                    <button id="btn-center-iceland" class="map-control-btn" title="Centrar en Islandia">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <circle cx="12" cy="12" r="3"></circle>
+                        </svg>
+                    </button>
+                    <button id="btn-fullscreen" class="map-control-btn" title="Pantalla completa">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="15 3 21 3 21 9"></polyline>
+                            <polyline points="9 21 3 21 3 15"></polyline>
+                            <line x1="21" y1="3" x2="14" y2="10"></line>
+                            <line x1="3" y1="21" x2="10" y2="14"></line>
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- Layer Switcher -->
+                <div class="layer-switcher">
+                    <button id="btn-layers" class="layer-btn" title="Capas del mapa">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+                            <polyline points="2 17 12 22 22 17"></polyline>
+                            <polyline points="2 12 12 17 22 12"></polyline>
+                        </svg>
+                    </button>
+                    <div id="layer-options" class="layer-options hidden">
+                        <label class="layer-option">
+                            <input type="radio" name="base-layer" value="osm" checked>
+                            <span>OpenStreetMap</span>
+                        </label>
+                        <label class="layer-option">
+                            <input type="radio" name="base-layer" value="satellite">
+                            <span>Satélite</span>
+                        </label>
+                        <label class="layer-option">
+                            <input type="radio" name="base-layer" value="terrain">
+                            <span>Terreno</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Loading Overlay -->
+                <div id="map-loading" class="map-loading hidden">
+                    <div class="spinner"></div>
+                    <span>Calculando ruta...</span>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Save Route Modal -->
+    <div id="modal-save-route" class="modal hidden">
+        <div class="modal-backdrop"></div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Guardar Ruta</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="route-name">Nombre de la ruta</label>
+                    <input type="text" id="route-name" placeholder="Ej: Círculo Dorado">
+                </div>
+                <div class="form-group">
+                    <label for="route-description">Descripción (opcional)</label>
+                    <textarea id="route-description" rows="3" placeholder="Describe tu ruta..."></textarea>
+                </div>
+                <div class="route-summary">
+                    <div class="summary-item">
+                        <span>Puntos:</span>
+                        <strong id="summary-points">0</strong>
+                    </div>
+                    <div class="summary-item">
+                        <span>Distancia:</span>
+                        <strong id="summary-distance">0 km</strong>
+                    </div>
+                    <div class="summary-item">
+                        <span>Duración:</span>
+                        <strong id="summary-duration">0 min</strong>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary modal-cancel">Cancelar</button>
+                <button id="btn-confirm-save" class="btn btn-primary">Guardar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Export Modal -->
+    <div id="modal-export" class="modal hidden">
+        <div class="modal-backdrop"></div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Exportar Informe</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="export-options">
+                    <label class="export-option">
+                        <input type="radio" name="export-format" value="pdf" checked>
+                        <div class="export-card">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                <polyline points="14 2 14 8 20 8"></polyline>
+                                <line x1="16" y1="13" x2="8" y2="13"></line>
+                                <line x1="16" y1="17" x2="8" y2="17"></line>
+                                <polyline points="10 9 9 9 8 9"></polyline>
+                            </svg>
+                            <span>PDF</span>
+                            <small>Informe profesional</small>
+                        </div>
+                    </label>
+                    <label class="export-option">
+                        <input type="radio" name="export-format" value="html">
+                        <div class="export-card">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="16 18 22 12 16 6"></polyline>
+                                <polyline points="8 6 2 12 8 18"></polyline>
+                            </svg>
+                            <span>HTML</span>
+                            <small>Página web imprimible</small>
+                        </div>
+                    </label>
+                    <label class="export-option">
+                        <input type="radio" name="export-format" value="json">
+                        <div class="export-card">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M4 22h14a2 2 0 0 0 2-2V7.5L14.5 2H6a2 2 0 0 0-2 2v4"></path>
+                                <polyline points="14 2 14 8 20 8"></polyline>
+                                <path d="M2 15h2a1 1 0 0 1 1 1v1a1 1 0 0 1-1 1 1 1 0 0 1 1 1v1a1 1 0 0 1-1 1H2"></path>
+                                <path d="M9 15v6"></path>
+                            </svg>
+                            <span>JSON</span>
+                            <small>Datos estructurados</small>
+                        </div>
+                    </label>
+                </div>
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="export-include-map" checked>
+                        Incluir captura del mapa
+                    </label>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary modal-cancel">Cancelar</button>
+                <button id="btn-confirm-export" class="btn btn-primary">Exportar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Route Detail Modal -->
+    <div id="modal-route-detail" class="modal hidden">
+        <div class="modal-backdrop"></div>
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h3 id="detail-route-name">Nombre de la Ruta</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="route-detail-stats">
+                    <div class="detail-stat">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                            <circle cx="12" cy="10" r="3"></circle>
+                        </svg>
+                        <div>
+                            <span>Puntos</span>
+                            <strong id="detail-points">0</strong>
+                        </div>
+                    </div>
+                    <div class="detail-stat">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M18 6L6 18M6 6l12 12"></path>
+                        </svg>
+                        <div>
+                            <span>Distancia</span>
+                            <strong id="detail-distance">0 km</strong>
+                        </div>
+                    </div>
+                    <div class="detail-stat">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <polyline points="12 6 12 12 16 14"></polyline>
+                        </svg>
+                        <div>
+                            <span>Duración</span>
+                            <strong id="detail-duration">0 min</strong>
+                        </div>
+                    </div>
+                    <div class="detail-stat">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                            <line x1="16" y1="2" x2="16" y2="6"></line>
+                            <line x1="8" y1="2" x2="8" y2="6"></line>
+                            <line x1="3" y1="10" x2="21" y2="10"></line>
+                        </svg>
+                        <div>
+                            <span>Creada</span>
+                            <strong id="detail-date">-</strong>
+                        </div>
+                    </div>
+                </div>
+                <div class="route-detail-description">
+                    <h4>Descripción</h4>
+                    <p id="detail-description">Sin descripción</p>
+                </div>
+                <div class="route-detail-waypoints">
+                    <h4>Paradas</h4>
+                    <ol id="detail-waypoints-list">
+                        <!-- Generated dynamically -->
+                    </ol>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="btn-delete-route" class="btn btn-danger">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="3 6 5 6 21 6"></polyline>
+                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                    </svg>
+                    Eliminar
+                </button>
+                <div class="modal-footer-right">
+                    <button id="btn-export-route" class="btn btn-secondary">Exportar</button>
+                    <button id="btn-load-route" class="btn btn-primary">Cargar en Mapa</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notifications -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <!-- Scripts -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/dexie@3.2.4/dist/dexie.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+
+    <script type="module" src="src/app.js"></script>
+</body>
+</html>

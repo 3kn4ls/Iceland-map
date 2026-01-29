@@ -1,0 +1,38 @@
+{
+  "name": "iceland-tourism-geoportal",
+  "version": "1.0.0",
+  "description": "Interactive GIS web portal for exploring Iceland's tourist attractions, planning routes, and generating reports",
+  "main": "index.html",
+  "scripts": {
+    "start": "npx serve -l 3000",
+    "dev": "npx serve -l 3000 --cors",
+    "preview": "python3 -m http.server 8000"
+  },
+  "keywords": [
+    "iceland",
+    "tourism",
+    "geoportal",
+    "gis",
+    "leaflet",
+    "maps",
+    "routing",
+    "travel",
+    "interactive-map"
+  ],
+  "author": "",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "dependencies": {},
+  "devDependencies": {},
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "browserslist": [
+    "last 2 versions",
+    "> 1%",
+    "not dead"
+  ]
+}
