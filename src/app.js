@@ -138,6 +138,22 @@ class GeoportalApp {
         // Export button
         document.getElementById('btn-export')?.addEventListener('click', () => this.openExportModal());
 
+        // Settings / Hard Reset button
+        document.getElementById('btn-settings')?.addEventListener('click', async () => {
+            const confirmed = confirm('¿Deseas reiniciar la aplicación y buscar actualizaciones? Esto borrará la caché local.');
+            if (confirmed) {
+                if ('serviceWorker' in navigator) {
+                    const registrations = await navigator.serviceWorker.getRegistrations();
+                    for (const registration of registrations) {
+                        await registration.unregister();
+                    }
+                }
+                const keys = await caches.keys();
+                await Promise.all(keys.map(key => caches.delete(key)));
+                window.location.reload(true);
+            }
+        });
+
         // Modal close buttons
         document.querySelectorAll('.modal-close, .modal-cancel, .modal-backdrop').forEach(el => {
             el.addEventListener('click', (e) => {
@@ -939,9 +955,28 @@ class GeoportalApp {
     registerServiceWorker() {
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./sw.js')
+                // Add version query param to force update check
+                navigator.serviceWorker.register('./sw.js?v=' + new Date().getTime())
                     .then(registration => {
                         console.log('ServiceWorker registration successful with scope: ', registration.scope);
+                        
+                        registration.onupdatefound = () => {
+                            const installingWorker = registration.installing;
+                            if (installingWorker == null) {
+                                return;
+                            }
+                            installingWorker.onstatechange = () => {
+                                if (installingWorker.state === 'installed') {
+                                    if (navigator.serviceWorker.controller) {
+                                        // New content is available; please refresh.
+                                        showToast('Nueva versión disponible. Reinicia la app.', 'info');
+                                    } else {
+                                        // Content is cached for offline use.
+                                        console.log('Content is cached for offline use.');
+                                    }
+                                }
+                            };
+                        };
                     })
                     .catch(err => {
                         console.log('ServiceWorker registration failed: ', err);
