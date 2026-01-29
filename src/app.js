@@ -189,8 +189,8 @@ class GeoportalApp {
         document.getElementById('view-explore')?.classList.toggle('active', view === 'explore');
         document.getElementById('view-routes')?.classList.toggle('active', view === 'routes');
         
-        // Show sidebar on mobile when switching views
-        if (window.innerWidth <= 768) {
+        // Show sidebar on mobile/tablet when switching views
+        if (window.innerWidth <= 1024) {
             document.getElementById('sidebar')?.classList.add('visible');
             setTimeout(() => this.map.invalidateSize(), 350);
         }
@@ -413,8 +413,8 @@ class GeoportalApp {
         // Can be used for adding custom points not from POI list
         // Currently disabled - only POIs can be added to routes
 
-        // On mobile, clicking map collapses sidebar
-        if (window.innerWidth <= 768) {
+        // On mobile/tablet, clicking map collapses sidebar
+        if (window.innerWidth <= 1024) {
             document.getElementById('sidebar')?.classList.remove('visible');
         }
     }
