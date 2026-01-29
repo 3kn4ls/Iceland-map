@@ -18,6 +18,12 @@
     <link rel="stylesheet" href="styles/sidebar.css">
     <link rel="stylesheet" href="styles/controls.css">
     <link rel="stylesheet" href="styles/modals.css">
+    <link rel="stylesheet" href="styles/mobile-overrides.css">
+    
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0066cc">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 </head>
 <body>
     <div id="app">
@@ -253,6 +259,33 @@
                 </div>
             </div>
         </main>
+
+        <!-- Mobile Bottom Nav -->
+        <nav class="bottom-nav">
+            <button class="bottom-nav-item active" data-view="explore">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"></polygon>
+                </svg>
+                <span>Explorar</span>
+            </button>
+            <button class="bottom-nav-item" data-view="routes">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="6" cy="19" r="3"></circle>
+                    <path d="M9 19h8.5a3.5 3.5 0 0 0 0-7h-11a3.5 3.5 0 0 1 0-7H21"></path>
+                    <circle cx="21" cy="5" r="3"></circle>
+                </svg>
+                <span>Rutas</span>
+            </button>
+            <button class="bottom-nav-item" id="btn-mobile-more">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="1"></circle>
+                    <circle cx="19" cy="12" r="1"></circle>
+                    <circle cx="5" cy="12" r="1"></circle>
+                </svg>
+                <span>Más</span>
+            </button>
+        </nav>
     </div>
 
     <!-- Save Route Modal -->

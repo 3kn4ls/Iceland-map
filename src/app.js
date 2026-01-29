@@ -57,6 +57,9 @@ class GeoportalApp {
         this.renderPOIList();
         await this.loadSavedRoutes();
 
+        // Register Service Worker
+        this.registerServiceWorker();
+
         // Expose global functions for popup actions
         window.geoportal = {
             addToRoute: (poiId) => this.addWaypointFromPOI(poiId),
@@ -74,6 +77,33 @@ class GeoportalApp {
         // Navigation
         document.getElementById('btn-explore')?.addEventListener('click', () => this.switchView('explore'));
         document.getElementById('btn-routes')?.addEventListener('click', () => this.switchView('routes'));
+
+        // Mobile Bottom Nav
+        document.querySelectorAll('.bottom-nav-item[data-view]').forEach(btn => {
+            btn.addEventListener('click', () => {
+                this.switchView(btn.dataset.view);
+                // Ensure sidebar is visible when switching view
+                document.getElementById('sidebar')?.classList.add('visible');
+            });
+        });
+
+        // Mobile "More" / Toggle Sidebar
+        document.getElementById('btn-mobile-more')?.addEventListener('click', () => {
+            const sidebar = document.getElementById('sidebar');
+            sidebar?.classList.toggle('visible');
+            
+            // Adjust map size after transition
+            setTimeout(() => this.map.invalidateSize(), 350);
+        });
+
+        // Mobile Layers Toggle
+        document.getElementById('btn-mobile-layers')?.addEventListener('click', (e) => {
+            const layerOptions = document.getElementById('layer-options');
+            if (layerOptions) {
+                layerOptions.classList.toggle('hidden');
+                // Ensure it's visible on screen (css handles positioning)
+            }
+        });
 
         // Search
         document.getElementById('search-input')?.addEventListener('input', (e) => this.handleSearch(e.target.value));
@@ -143,14 +173,27 @@ class GeoportalApp {
     switchView(view) {
         this.currentView = view;
 
-        // Update nav buttons
+        // Update nav buttons (desktop)
         document.querySelectorAll('.nav-btn').forEach(btn => {
             btn.classList.toggle('active', btn.dataset.view === view);
+        });
+
+        // Update bottom nav (mobile)
+        document.querySelectorAll('.bottom-nav-item').forEach(btn => {
+            if (btn.dataset.view) {
+                btn.classList.toggle('active', btn.dataset.view === view);
+            }
         });
 
         // Update sidebar views
         document.getElementById('view-explore')?.classList.toggle('active', view === 'explore');
         document.getElementById('view-routes')?.classList.toggle('active', view === 'routes');
+        
+        // Show sidebar on mobile when switching views
+        if (window.innerWidth <= 768) {
+            document.getElementById('sidebar')?.classList.add('visible');
+            setTimeout(() => this.map.invalidateSize(), 350);
+        }
 
         if (view === 'routes') {
             this.renderSavedRoutes();
@@ -369,6 +412,11 @@ class GeoportalApp {
     handleMapClick(latlng) {
         // Can be used for adding custom points not from POI list
         // Currently disabled - only POIs can be added to routes
+
+        // On mobile, clicking map collapses sidebar
+        if (window.innerWidth <= 768) {
+            document.getElementById('sidebar')?.classList.remove('visible');
+        }
     }
 
     /**
@@ -883,6 +931,23 @@ class GeoportalApp {
                 this.exportRoute = originalExport;
             }
         };
+    }
+
+    /**
+     * Register Service Worker for PWA
+     */
+    registerServiceWorker() {
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js')
+                    .then(registration => {
+                        console.log('ServiceWorker registration successful with scope: ', registration.scope);
+                    })
+                    .catch(err => {
+                        console.log('ServiceWorker registration failed: ', err);
+                    });
+            });
+        }
     }
 }
 

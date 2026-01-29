@@ -1,0 +1,17 @@
+{
+  "name": "Iceland Geoportal",
+  "short_name": "IcelandMap",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#0066cc",
+  "description": "Explora Islandia, planifica rutas y descubre lugares increíbles.",
+  "icons": [
+    {
+      "src": "assets/icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
